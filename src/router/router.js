@@ -6,7 +6,11 @@ const userController = require('../controller/userContoller')
 
 
 
-router.get('/', (req,res)=>res.send('hi'))
+router.post('/api',async (req,res)=>{
+   data1 =  req.body.fname
+   
+   console.log(data1)
+})
 
 
 

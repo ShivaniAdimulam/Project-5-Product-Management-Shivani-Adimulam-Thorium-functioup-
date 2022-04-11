@@ -12,6 +12,8 @@ const isValidEmail = function(email) {
   const isValidPhone = function(phone){
     return (/^[6-9]\d{9}$/.test(phone))
 }
+
+
 module.exports.isvalid = isvalid
 module.exports.isValidEmail = isValidEmail
 module.exports.isValidPhone=isValidPhone
