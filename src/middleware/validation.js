@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+
 const isvalid = function (value) {
     if (typeof value == undefined || typeof value == null) { return false }
     if (typeof value == 'string' && value.trim().length == 0) { return false }
@@ -13,7 +15,11 @@ const isValidEmail = function(email) {
     return (/^[6-9]\d{9}$/.test(phone))
 }
 
+const isValidObjectId= function(ObjectId){
+  return mongoose.Types.ObjectId.isValid(ObjectId)
+}
 
 module.exports.isvalid = isvalid
 module.exports.isValidEmail = isValidEmail
 module.exports.isValidPhone=isValidPhone
+module.exports.isValidObjectId = isValidObjectId

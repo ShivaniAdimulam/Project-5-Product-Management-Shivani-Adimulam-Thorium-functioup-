@@ -1,4 +1,6 @@
 const aws = require("aws-sdk")
+const userContoller = require('../controller/userContoller')
+
 
 aws.config.update(
     {
@@ -16,7 +18,7 @@ let uploadFile = async (file) => {
         var uploadParams = {
             ACL: "public-read",
             Bucket: "classroom-training-bucket", // HERE
-            Key: "/chandresh" + file.originalname, // HERE chandresh/img.jpg
+            Key: "profilePic" + file.originalname, // HERE chandresh/img.jpg
             Body: file.buffer
         }
 
