@@ -32,12 +32,12 @@ const userModel = new mongoose.Schema({
         shipping: {
             street: { type: String, required: true },
             city: { type: String, required: true },
-            pincode: { number, required: true }
+            pincode: { type:Number, required: true }
         },
         billing: {
             street: { type: String, required: true },
             city: { type: String, required: true },
-            pincode: { number, required: true }
+            pincode: { type:Number, required: true }
         }
     }
 }, { timestamps: true })

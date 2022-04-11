@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(multer().any())
 
 
-mongoose.connect('mongodb+srv://arnabbiswas_14:arnabbiswas@cluster0.b95gv.mongodb.net/group-11-Database?retryWrites=true&w=majority',{useNewUrlParser:true})
+mongoose.connect('mongodb+srv://pankaj:XHR0F0IrqL14JxKZ@cluster0.ajtoy.mongodb.net/group6-Database-DB',{useNewUrlParser:true})
 .then( () =>console.log("mongoose is contected..."))
 .catch( err => console.log(err))
 
