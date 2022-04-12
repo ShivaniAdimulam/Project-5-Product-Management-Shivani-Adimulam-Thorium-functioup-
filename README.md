@@ -485,3 +485,9 @@ Refer below sample
 
 
 const decrypted = encryptpwd.decrypt(encrypted, password)
+
+
+
+const obj = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
+console.log(obj); // { title: 'product' }

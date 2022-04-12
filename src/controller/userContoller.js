@@ -11,9 +11,9 @@ const { findById } = require('../model/userModel');
 
 const registration = async (req, res) => {
     try {
-        const data1 = req.body.data
+        const data = req.body
 
-        const data = JSON.parse(data1)
+        // const data = JSON.parse(data1)
         if (Object.keys(data).length === 0) { return res.status(400).send({ status: false, message: "Please enter Data like firstname lastname" }) }
 
         const { fname, lname, email, phone, password, address } = data
@@ -103,7 +103,7 @@ const loginUser = async function (req, res) {
         if (decrpted == true) {
             const token = await jwt.sign({
                 UserId: user._id,
-            }, 'privatekey', { expiresIn: 60 * 60 })
+            }, 'privatekey', { expiresIn: "10h" })
 
             const abc = res.setHeader('Authorization', `Bearer ${token}`);
             console.log(abc)
@@ -142,104 +142,95 @@ const updateUser = async function (req, res) {
     try {
         let data = req.body
         let userId = req.params.userId
-        if (Object.keys(data).length === 0) {
+       let profilePic = req.files
+        if (!data || !profilePic) {
             return res.status(400).send({ status: false, message: "Invalid request parameters. please provide update details" })
         }
+        
         if (!validator.isValidObjectId(userId)) {
             return res.status(400).send({ status: false, message: "Enter valid userId" })
         }
-        const { fname, lname, email, phone, password, address } = data
-
-        const profile = {}
-
-
-        if (validator.isvalid(fname)) {
-            profile['fname'] = fname
-        }
-
-        if (validator.isvalid(lname)) {
-            profile['lname'] = lname
-        }
-
-        if (validator.isvalid(email)) {
-            if (validator.isValidEmail(email)) {
-                const U_email = await userModel.findOne({ email: email })
-                if (U_email) { return res.status(400).send({ status: false, message: "email already exist" }) }
-                profile['email'] = email
-            } else {
-                return res.status(400).send({ status: false, message: "please enter valid email" })
-            }
-        }
-
-        if (validator.isvalid(phone)) {
-            if (validator.isValidPhone(phone)) {
-                const U_phone = await userModel.findOne({ phone: phone })
-                if (U_phone) { return res.status(400).send({ status: false, message: "phone no. already exist" }) }
-                profile['phone'] = phone
-            } else {
-                return res.status(400).send({ status: false, message: "please enter valid phone no" })
-            }
-        }
-
-        if (validator.isvalid(password))
-            if (password.length < 8 || password.length > 15) { return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" }) }
-        const hash = bcrypt.hashSync(password, 6);
-        profile['password'] = hash
-
-        const { shipping, billing } = address
-
-        if (!Object.keys(address).length == 0) {
-            if (!Object.keys(shipping).length == 0) {
-                if (validator.isvalid(shipping.street)) {
-                    profile[address.shipping['street']] = shipping.street
-                }
-                if (validator.isvalid(shipping.city)) {
-                    profile[address.shipping['city']] = shipping.city
-                }
-                if (!validator.isvalid(shipping.pincode)) {
-                    profile[address.shipping['pincode']] = shipping.pincode
-                }
-            }
-        }
-
-        if (!Object.keys(address).length == 0) {
-            if (!Object.keys(billing).length == 0) {
-                if (validator.isvalid(billing.street)) {
-                    profile[address.billing['street']] = billing.street
-                }
-                if (validator.isvalid(billing.city)) {
-                    profile[address.billing['city']] = billing.city
-                }
-                if (!validator.isvalid(shipping.pincode)) {
-                    profile[address.billing['pincode']] = billing.pincode
-                }
-            }
-        }
-
-
-
-        // if (Object.keys(billing).length == 0) { return res.status(400).send({ status: false, massage: "please enter billing address" }) }
-        // if (!validator.isvalid(billing.street)) { return res.status(400).send({ status: false, massage: "please enter street of billing address" }) }
-        // if (!validator.isvalid(billing.city)) { return res.status(400).send({ status: false, massage: "please enter city of billing address" }) }
-        // if (!validator.isvalid(billing.pincode)) { return res.status(400).send({ status: false, massage: "please enter pincode of billing address" }) }
-
-        const profilePic = req.files
-        if (profilePic && profilePic.length > 0) {
-
-            let uploadedFileURL = await uploadAws.uploadFile(profilePic[0])
-            profile['profileImage'] = uploadedFileURL
-        }
-
-
-
-
-
-
-
-
+        
+        const u_details = await userModel.findById(userId)
+        if (!u_details) return res.status(400).send({ status: false, message: "user not found" })
+       
+       
+       
+       
         if (req.decodedToken.UserId == userId) {
+            const { fname, lname, email, phone, password, address,} = data
+            const profile = { address: u_details.address }
 
-            let updated = await userModel.findOneAndUpdate({ _id: userId }, { $set: profile }, { new: true })
+            if (validator.isvalid(fname)) {
+                profile['fname'] = fname
+            }
+
+
+
+            if (validator.isvalid(lname)) {
+                profile['lname'] = lname
+            }
+
+
+            if (validator.isvalid(email)) {
+                if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, massage: "email is not correct formate enter correct email id" }) }
+                let emailFind = await userModel.findOne({ email: email })
+                if (emailFind) { return res.status(400).send({ status: false, massage: "Email id already exist" }) }
+                profile['email'] = email
+            }
+
+
+            if (validator.isvalid(phone)) {
+                if (!validator.isValidPhone(phone)) { return res.status(400).send({ status: false, massage: "phone not correct enter correct phone" }) }
+                let phoneFind = await userModel.findOne({ phone: phone })
+                if (phoneFind) return res.status(400).send({ status: false, massage: "phone no already exist" })
+                profile['phone'] = phone
+            }
+
+            if (validator.isvalid(password)) {
+                if (password.length < 8 || password.length > 15) { return res.status(400).send({ status: false, massage: "please length should be 8 to 15 password" }) }
+                const hash = bcrypt.hashSync(password, 6);
+                profile['password'] = hash
+            }
+ 
+            if (profilePic && profilePic.length > 0) {
+                const profilePic = req.files
+                let uploadedFileURL = await uploadAws.uploadFile(profilePic[0])
+                profile['profileImage'] = uploadedFileURL
+            }
+            
+            
+            if (address) {
+                const obj = JSON.parse(JSON.stringify(address));
+                if (Object.keys(obj.shipping).length != 0) {
+                    if (validator.isvalid(obj.shipping.street)) {
+                        profile['address']['shipping']['street'] = obj.shipping.street
+                    }
+                    if (validator.isvalid(obj.shipping.city)) {
+                        profile['address']['shipping']['city'] = obj.shipping.city
+                    }
+                    if (validator.isvalid(obj.shipping.pincode)) {
+                        profile['address']['shipping']['pincode'] = obj.shipping.pincode
+                    }
+                }
+                if (Object.keys(obj.billing).length != 0) {
+                    if (validator.isvalid(obj.billing.street)) {
+                        profile['address']['billing']['street'] = obj.billing.street
+                    }
+                    if (validator.isvalid(obj.billing.city)) {
+                        profile['address']['billing']['city'] = obj.billing.city
+                    }
+                    if (validator.isvalid(obj.billing.pincode)) {
+                        profile['address']['billing']['pincode'] = obj.billing.pincode
+                    }
+                }
+            }
+
+
+
+
+
+            let updated = await userModel.findOneAndUpdate({_id:userId },{$set:profile},{ new: true })
 
             return res.status(200).send({ status: true, message: "data updated successfully", data: updated })
 
