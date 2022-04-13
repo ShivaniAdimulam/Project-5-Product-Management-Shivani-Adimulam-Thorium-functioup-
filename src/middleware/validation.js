@@ -22,7 +22,33 @@ const isValidObjectId= function(ObjectId){
   return mongoose.Types.ObjectId.isValid(ObjectId)
 }
 
+const isValidSize = function (title) {
+  return ["S", "XS","M","X", "L","XXL", "XL"].indexOf(title) !== -1
+}
+
+const isValidArray = function (object){
+  if (typeof (object) === "object") {
+      object = object.filter(x => x.trim())
+      if (object.length == 0) {
+          return false;
+      }
+      else {return true;}
+      }
+    }
+  
+    const validForEnum = function (value) {
+      let enumValue = ["S", "XS", "M", "X", "L", "XXL", "XL"]
+      for (let x of value) {
+          if (enumValue.includes(x) == false) {
+              return false
+          }
+      }
+      return true;
+  }
 module.exports.isvalid = isvalid
 module.exports.isValidEmail = isValidEmail
 module.exports.isValidPhone=isValidPhone
 module.exports.isValidObjectId = isValidObjectId
+module.exports.isValidArray=isValidArray
+module.exports.isValidSize=isValidSize
+module.exports.validForEnum=validForEnum

@@ -124,7 +124,7 @@ const loginUser = async function (req, res) {
 
 const getUser = async (req, res) => {
     try {
-        let UserId = req.params.userId
+        let UserId = req.params.userId.trim()
 
         if (!validator.isValidObjectId(UserId)) { return res.status(400).send({ status: false, message: "Please provide valid userid" }) }
         if (req.decodedToken.UserId == UserId) {
@@ -141,7 +141,7 @@ const getUser = async (req, res) => {
 const updateUser = async function (req, res) {
     try {
         let data = req.body
-        let userId = req.params.userId
+        let userId = req.params.userId.trim()
        let profilePic = req.files
         if (!data || !profilePic) {
             return res.status(400).send({ status: false, message: "Invalid request parameters. please provide update details" })

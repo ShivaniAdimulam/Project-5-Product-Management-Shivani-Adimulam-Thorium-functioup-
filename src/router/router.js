@@ -4,17 +4,10 @@ const res = require('express/lib/response')
 const router = express.Router()
 const userController = require('../controller/userContoller')
 const auth = require('../middleware/middleware')
+const productController = require('../controller/productController')
 
 
-
-router.post('/api',async (req,res)=>{
-   data1 =  req.body.fname
-   
-   console.log(data1)
-})
-
-
-
+// user Api
 router.post('/register' ,userController.registration)
 
 router.post('/login' , userController.loginUser)
@@ -22,5 +15,18 @@ router.post('/login' , userController.loginUser)
 router.get('/user/:userId/profile' ,auth.authentication ,userController.getUser )
 
 router.put('/user/:userId/profile',auth.authentication,userController.updateUser)
+
+// product Api
+router.post('/products' , productController.createProduct)
+
+router.get('/products' , productController.getByFilter)
+
+router.get('/products/:productId', productController.getproduct)
+
+router.put('/products/:productId' , productController.productUpdate)
+
+router.delete('/products/:productId' , productController.deleteProduct)
+
+
 
 module.exports = router

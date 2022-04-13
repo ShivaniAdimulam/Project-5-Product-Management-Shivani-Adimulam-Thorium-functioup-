@@ -2,31 +2,37 @@ const mongoose = require('mongoose')
 const userModel = new mongoose.Schema({
     fname: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     },
     lname: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     profileImage: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     }, // s3 link
     phone: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     password: {
         type: String,
         required: true,
         minLen: 8,
-        maxLen: 15
+        maxLen: 15,
+        trim:true
     }, // encrypted password
     address: {
         shipping: {
