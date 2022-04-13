@@ -108,14 +108,14 @@ const getByFilter = async (req, res) => {
 
         let filterquery = { isDeleted: false }
 
-        if (!validator.isvalid(querySize)) {
+        if (validator.isvalid(querySize)) {
             let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
             if (!gavailableSizes.includes(querySize)) return res.status(400).send({ status: false, msg: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
             filterquery['availableSizes'] = querySize
         }
 
 
-        if (!validator.isvalid(quaryName)) {
+        if (validator.isvalid(quaryName)) {
             filterquery['title'] = { $regex: '^' + `${quaryName}`, $options: 'i' }
         }
 
