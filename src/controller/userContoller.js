@@ -235,7 +235,7 @@ const updateUser = async function (req, res) {
             return res.status(200).send({ status: true, message: "data updated successfully", data: updated })
 
         } else {
-            return res.status(404).send({ status: false, message: "authentication denied" })
+            return res.status(403).send({ status: false, message: "authorization denied" })
         }
     }
     catch (err) {
