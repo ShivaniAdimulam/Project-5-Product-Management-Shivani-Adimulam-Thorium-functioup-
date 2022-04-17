@@ -5,6 +5,7 @@ const router = express.Router()
 const userController = require('../controller/userContoller')
 const auth = require('../middleware/middleware')
 const productController = require('../controller/productController')
+const cartController = require('../controller/cartController')
 
 
 // user Api
@@ -26,6 +27,11 @@ router.get('/products/:productId', productController.getproduct)
 router.put('/products/:productId' , productController.productUpdate)
 
 router.delete('/products/:productId' , productController.deleteProduct)
+
+// CART API
+router.post('/users/:userId/cart',auth.authentication, cartController.createCart )
+
+
 
 
 

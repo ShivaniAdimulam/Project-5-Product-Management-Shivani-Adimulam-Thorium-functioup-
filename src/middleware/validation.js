@@ -45,6 +45,10 @@ const isValidArray = function (object){
       }
       return true;
   }
+
+  const validPinCode = function(value){
+    return /^[1-9][0-9]{5}$/.test(value)
+  }
 module.exports.isvalid = isvalid
 module.exports.isValidEmail = isValidEmail
 module.exports.isValidPhone=isValidPhone
@@ -52,3 +56,4 @@ module.exports.isValidObjectId = isValidObjectId
 module.exports.isValidArray=isValidArray
 module.exports.isValidSize=isValidSize
 module.exports.validForEnum=validForEnum
+module.exports.validPinCode=validPinCode

@@ -64,7 +64,7 @@ const createProduct = async (req, res) => {
 
         let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
         for (let i of availableSizes)
-            if (!gavailableSizes.includes(i)) return res.status(400).send({ status: false, msg: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
+            if (!gavailableSizes.includes(i)) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
 
 
         const productPic = req.files
@@ -110,7 +110,7 @@ const getByFilter = async (req, res) => {
 
         if (validator.isvalid(querySize)) {
             let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
-            if (!gavailableSizes.includes(querySize)) return res.status(400).send({ status: false, msg: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
+            if (!gavailableSizes.includes(querySize)) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
             filterquery['availableSizes'] = querySize
         }
 
@@ -150,15 +150,15 @@ const getproduct = async function (req, res) {
         const productId = req.params.productId
         console.log(productId)
         if (!validator.isValidObjectId(productId)) {
-            return res.status(400).send({ status: false, msg: "please provide valid productId" })
+            return res.status(400).send({ status: false, message: "please provide valid productId" })
         }
         console.log(productId)
         let productData = await productModel.findOne({ _id: productId, isDeleted: false })
         console.log(productData)
         if (productData) {
-            return res.status(200).send({ status: true, msg: "successfull data found", data: productData })
+            return res.status(200).send({ status: true, message: "successfull data found", data: productData })
         } else {
-            return res.status(400).send({ status: false, msg: "no such product is available" })
+            return res.status(400).send({ status: false, message: "no such product is available" })
         }
 
     } catch (error) {
@@ -173,7 +173,7 @@ let productUpdate = async function (req, res) {
         let data1 = req.body
         const data = JSON.parse(JSON.stringify(data1))
         let productID = req.params.productId
-        // if (!productID) { res.status(400).send({ status: false, msg: "please provide valid ProductId" }) }
+        // if (!productID) { res.status(400).send({ status: false, message: "please provide valid ProductId" }) }
 
         if (Object.keys(data).length === 0) {
             return res.status(400).send({ status: false, message: "Invalid request parameters. please provide  details" })
@@ -240,7 +240,7 @@ let productUpdate = async function (req, res) {
 
             if (validator.isvalid(availableSizes)) {
                 let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
-                if (!gavailableSizes.includes(availableSizes.trim())) return res.status(400).send({ status: false, msg: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
+                if (!gavailableSizes.includes(availableSizes.trim())) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
                 Products['availableSizes'] = availableSizes
             }
 
@@ -254,7 +254,7 @@ let productUpdate = async function (req, res) {
             const profilePic = req.files
             if (profilePic && profilePic.length > 0) {
 
-                let uploadedFileURL = await uploadAws.uploadFile(profilePic[0])
+                let uploadedFileURL = await uploadAws.productuploadFile(profilePic[0])
                 Products['profileImage'] = uploadedFileURL
             }
 
@@ -264,9 +264,9 @@ let productUpdate = async function (req, res) {
 
         }
 
-        else { res.status(400).send({ status: false, msg: "Document already deleted cannot update" }) }
+        else { res.status(400).send({ status: false, message: "Document already deleted cannot update" }) }
     }
-    catch (err) { res.status(500).send({ status: false, msg: err.message }) }
+    catch (err) { res.status(500).send({ status: false, message: err.message }) }
 }
 
 // DELETE PRODUCT
@@ -276,7 +276,7 @@ let deleteProduct = async function (req, res) {
 
         let productDetails = await productModel.findById(data)
         console.log(productDetails)
-        if (!productDetails) return res.status(404).send({ status: false, msg: "product not exist" })
+        if (!productDetails) return res.status(404).send({ status: false, message: "product not exist" })
         if (productDetails.isDeleted == false) {
             let deleteProduct = await productModel.findOneAndUpdate({ _id: data }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
             return res.status(200).send({ status: true, message: "successfull delected", data: deleteProduct })
@@ -287,7 +287,7 @@ let deleteProduct = async function (req, res) {
 
 
     } catch (err) {
-        return res.status(404).send({ status: false, message: err.message })
+        return res.status(500).send({ status: false, message: err.message })
     }
 }
 
