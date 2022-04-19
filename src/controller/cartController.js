@@ -247,7 +247,9 @@ const updateCart = async (req, res) => {
                 let productpriceofcart = CartProductQuantity * productDeatils.price
                 let totalprices = cartDeatils.totalPrice - productpriceofcart
 
-                let reduceCart = await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: filter, $set: { totalPrice: totalprices, $inc: { totalItems: -1 } } })
+                let totalitem = cartDeatils.items.length
+
+                let reduceCart = await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: filter, $set: { totalPrice: totalprices,  totalItems:totalitem } })
 
                 return res.status(200).send({ status: true, message: "quqntity decremeted by 1 for given productId", data: productDeatils })
 
@@ -340,7 +342,7 @@ let getCart = async function (req, res) {
         }
 
         else {
-            return res.status(404).send({ status: false, message: "authorization failed" })
+            return res.status(403).send({ status: false, message: "authorization failed" })
         }
 
     }
@@ -374,7 +376,7 @@ const deleteCart = async (req, res) => {
             if (cart) {
 
                 let deleteC = await cartModel.findOneAndUpdate({ userId: userid }, { $set: { items: [], totalItems: 0, totalPrice: 0 } }, { new: true })
-                return res.status(200).send({ status: true, message: "cart deleted successfully", data: deleteC })
+                return res.status(204).send({ status: true, message: "cart deleted successfully", data: deleteC })
 
             } else {
                 return res.status(404).send({ status: false, message: "cart not found for given userId" })

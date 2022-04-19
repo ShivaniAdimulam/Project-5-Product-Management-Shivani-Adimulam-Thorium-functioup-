@@ -6,6 +6,7 @@ const userController = require('../controller/userContoller')
 const auth = require('../middleware/middleware')
 const productController = require('../controller/productController')
 const cartController = require('../controller/cartController')
+const orderController = require('../controller/orderController')
 
 
 // user Api
@@ -39,7 +40,9 @@ router.delete('/users/:userId/cart' ,auth.authentication, cartController.deleteC
 
 
 // order api
+router.post('/users/:userId/orders' ,auth.authentication, orderController.createOrder)
 
+router.put('/users/:userId/orders', auth.authentication, orderController.UpdateOrder)
 
 
 
