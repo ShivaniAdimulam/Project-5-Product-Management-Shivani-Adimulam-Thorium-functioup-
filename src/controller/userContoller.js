@@ -49,13 +49,13 @@ const registration = async (req, res) => {
         if (!validator.isvalid(shipping.street)) { return res.status(400).send({ status: false, massage: "please enter street of shipping address" }) }
         if (!validator.isvalid(shipping.city)) { return res.status(400).send({ status: false, massage: "please enter city of shipping address" }) }
         if (!validator.isvalid(shipping.pincode)) { return res.status(400).send({ status: false, massage: "please enter pincode of shipping address" }) }
-        if(!validator.validPinCode(shipping.pincode)) {return res.status(400).send({ status: false, massage: "please enter correct pincode of shipping address"})}
+        if (!validator.validPinCode(shipping.pincode)) { return res.status(400).send({ status: false, massage: "please enter correct pincode of shipping address" }) }
 
         if (Object.keys(billing).length == 0) { return res.status(400).send({ status: false, massage: "please enter billing address" }) }
         if (!validator.isvalid(billing.street)) { return res.status(400).send({ status: false, massage: "please enter street of billing address" }) }
         if (!validator.isvalid(billing.city)) { return res.status(400).send({ status: false, massage: "please enter city of billing address" }) }
         if (!validator.isvalid(billing.pincode)) { return res.status(400).send({ status: false, massage: "please enter pincode of billing address" }) }
-        if(!validator.validPinCode(billing.pincode)) {return res.status(400).send({ status: false, massage: "please enter correct pincode of billing address"})}
+        if (!validator.validPinCode(billing.pincode)) { return res.status(400).send({ status: false, massage: "please enter correct pincode of billing address" }) }
         const profilePic = req.files
         if (profilePic && profilePic.length > 0) {
 
@@ -131,7 +131,7 @@ const getUser = async (req, res) => {
             let newData = await userModel.findById({ _id: UserId })
             return res.status(200).send({ status: true, message: "UserProfile Data is here ", data: newData })
         } else {
-            return res.status(404).send({ status: false, message: "data not found" })
+            return res.status(403).send({ status: false, message: "authorization denied" })
         }
     }
     catch (err) { return res.status(500).send({ status: false, message: err.message }) }
@@ -159,7 +159,8 @@ const updateUser = async function (req, res) {
 
         if (req.decodedToken.UserId == userId) {
             const { fname, lname, email, phone, password, address, } = data
-            const profile = { address: u_details.address }
+
+            let profile = { address: u_details.address }
 
             if (validator.isvalid(fname)) {
                 profile['fname'] = fname
@@ -199,39 +200,34 @@ const updateUser = async function (req, res) {
                 profile['profileImage'] = uploadedFileURL
             }
 
-            if (address) {
-                const obj = JSON.parse(JSON.stringify(address));
-                console.log(Object.keys(obj.shipping.length))
-                if (Object.keys(obj.shipping).length != 0) {
-                    if (validator.isvalid(obj.shipping.street)) {
-                        profile['address']['shipping']['street'] = obj.shipping.street
-                    }
-                    if (validator.isvalid(obj.shipping.city)) {
-                        profile['address']['shipping']['city'] = obj.shipping.city
-                    }
-                    if (validator.isvalid(obj.shipping.pincode)) {
-                        profile['address']['shipping']['pincode'] = obj.shipping.pincode
-                    }
-                }
-            }
-            if (address) {
-                const obj = JSON.parse(JSON.stringify(address));
-                if (Object.keys(obj.billing).length != 0) {
-                    if (validator.isvalid(obj.billing.street)) {
-                        profile['address']['billing']['street'] = obj.billing.street
-                    }
-                    if (validator.isvalid(obj.billing.city)) {
-                        profile['address']['billing']['city'] = obj.billing.city
-                    }
-                    if (validator.isvalid(obj.billing.pincode)) {
-                        profile['address']['billing']['pincode'] = obj.billing.pincode
-                    }
-                }
             
+
+            
+            if (address.shipping != undefined) {
+                if (validator.isvalid(address.shipping.street)) {
+                    console.log("hi")
+                    profile['address']["shipping"]["street"] = address.shipping.street
+                }
+                if (validator.isvalid(address.shipping.city)) {
+                    profile['address']["shipping"]["city"] = address.shipping.city
+                }
+                if (validator.isvalid(address.shipping.pincode)) {
+                    profile['address']['shipping']['pincode'] = address.shipping.pincode
+                }
             }
+            if (address.billing != undefined) {
+                if (validator.isvalid(address.billing.street)) {
+                    profile['address']['billing']['street'] = address.billing.street
+                }
+                if (validator.isvalid(address.billing.city)) {
+                    profile['address']['billing']['city'] = address.billing.city
+                }
+                if (validator.isvalid(address.billing.pincode)) {
+                    profile['address']['billing']['pincode'] = address.billing.pincode
+                }
 
-console.log(profile)
 
+            }
 
             let updated = await userModel.findOneAndUpdate({ _id: userId }, { $set: profile }, { new: true })
 

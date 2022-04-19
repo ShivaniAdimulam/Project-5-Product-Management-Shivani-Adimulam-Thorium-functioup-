@@ -24,7 +24,7 @@ const prodSchema = new mongoose.Schema({
     currencyFormat: {
         type: String,
         required: true,
-
+        trim: true
     },
     isFreeShipping: {
         type: Boolean,
@@ -35,7 +35,8 @@ const prodSchema = new mongoose.Schema({
         required: true
     },
     style: {
-        type: String
+        type: String,
+        trim: true
     },
     availableSizes: {
         type: [String],

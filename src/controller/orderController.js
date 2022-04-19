@@ -19,7 +19,7 @@ const createOrder = async (req, res) => {
             return res.status(400).send({ status: false, message: "Enter valid UserId" })
         }
 
-        if (req.decodedToken.userId = Userid) {
+        if (req.decodedToken.UserId = Userid) {
             let user = await userModel.findById(Userid)
             if (!user) {
                 return res.status(400).send({ status: false, message: "user is not present" })
@@ -95,7 +95,7 @@ const createOrder = async (req, res) => {
 const UpdateOrder = async function (req, res) {
 
 
-    let userId = req.params.userId
+   try {let userId = req.params.userId
     let OrderId = req.body.orderId
 
     if (Object.keys(req.body).length == 0) {
@@ -149,10 +149,12 @@ const UpdateOrder = async function (req, res) {
         else{
             return res.status(400).send({ status: false, message: "this order is not cancellable" })
         }
-
-
-
+    }else{
+        return res.status(403).send({ status: false, message: "authorizatin denied" })
     }
+}catch(err){
+    return res.status(500).send({ status: false, message: err.message })
+}
 }
 
 module.exports.createOrder = createOrder

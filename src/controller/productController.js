@@ -57,8 +57,8 @@ const createProduct = async (req, res) => {
             return res.status(400).send({ status: false, message: "enter  currencyFormat correct formate ['$' , '₹' , '¥' , '€']...it is required" })
         }
 
-
-        if (availableSizes.length == 0) {
+       
+        if (availableSizes == undefined) {
             return res.status(400).send({ status: false, message: "enter at least 1 size" })
         }
 
@@ -133,12 +133,15 @@ const getByFilter = async (req, res) => {
                 filterquery['price'] = { $lt: quarypriceLessThan }
             }
 
-        } else {
-            return res.status(400).send({ status: false, message: "please provide greaterthan or lessthan price atleast one" })
         }
-        let detailsByFilter = await productModel.find(filterquery)
-        res.status(200).send({ status: true, message: "data fetch successfully", data: detailsByFilter })
-
+        let detailsByFilter = await productModel.find(filterquery).sort({price:1})
+        if(detailsByFilter.length==0){
+            res.status(404).send({status:false,Message:"No such a products available "})
+        }else{
+        
+       return res.status(200).send({ status: true, message: "data fetch successfully", data: detailsByFilter })
+        }
+        
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
@@ -237,11 +240,11 @@ let productUpdate = async function (req, res) {
             if (validator.isvalid(style)) {
                 Products['style'] = style
             }
-
-            if (validator.isvalid(availableSizes)) {
+            let addavailableSizes = ""
+            if (validator.isvalid(availableSizes.trim())) {
                 let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
                 if (!gavailableSizes.includes(availableSizes.trim())) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
-                Products['availableSizes'] = availableSizes
+                addavailableSizes= availableSizes
             }
 
             if (validator.isvalid(installments)) {
@@ -258,7 +261,7 @@ let productUpdate = async function (req, res) {
                 Products['profileImage'] = uploadedFileURL
             }
 
-            let newData = await productModel.findOneAndUpdate({ _id: productID }, { $set: Products }, { new: true })
+            let newData = await productModel.findOneAndUpdate({ _id: productID }, { $set: Products, $push:{availableSizes:addavailableSizes} }, { new: true })
             return res.status(200).send({ status: true, message: "data updated successfully", data: newData })
 
 
@@ -274,6 +277,10 @@ let deleteProduct = async function (req, res) {
     try {
         let data = req.params.productId
 
+        if (!validator.isValidObjectId(data)) {
+            return res.status(400).send({ status: "false" }, { msg: "please provide  valid productid" })
+        }
+
         let productDetails = await productModel.findById(data)
         console.log(productDetails)
         if (!productDetails) return res.status(404).send({ status: false, message: "product not exist" })
@@ -281,7 +288,7 @@ let deleteProduct = async function (req, res) {
             let deleteProduct = await productModel.findOneAndUpdate({ _id: data }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
             return res.status(200).send({ status: true, message: "successfull delected", data: deleteProduct })
         } else {
-            return res.status(400).send({ status: false, message: "product not found" })
+            return res.status(404).send({ status: false, message: "product not found" })
         }
 
 
