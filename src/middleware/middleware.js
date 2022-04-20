@@ -10,7 +10,7 @@ const authentication = async function (req, res, next) {
                 req.decodedToken = decoded
             }
             else {
-                return res.status(403).send({ status: false, msg: "invalid authentication token" })
+                return res.status(401).send({ status: false, msg: "invalid authentication token" })
             }
         }else{
             return res.status(403).send({ status: false, message: `Missing authentication token in request` })
