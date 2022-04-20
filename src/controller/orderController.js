@@ -75,7 +75,7 @@ const createOrder = async (req, res) => {
 
             let order = await orderModel.create(data)
 
-            return res.status(200).send({ status: true, message: "order created succefully", data: order })
+            return res.status(201).send({ status: true, message: "order created succefully", data: order })
 
 
         } else {
@@ -103,24 +103,24 @@ const UpdateOrder = async function (req, res) {
     }
 
     if (!validator.isvalid(OrderId)) {
-        return res.status(400).send({ status: "false" }, { msg: "please provide valid userId" })
+        return res.status(400).send({ status: "false" ,  msg: "please provide valid userId" })
     }
 
     if (!validator.isvalid(userId)) {
-        return res.status(400).send({ status: "false" }, { msg: "please provide valid userId" })
+        return res.status(400).send({ status: "false" ,  msg: "please provide valid userId" })
     }
 
     if (!validator.isValidObjectId(userId)) {
-        return res.status(400).send({ status: "false" }, { msg: "please provide  valid userid" })
+        return res.status(400).send({ status: "false" ,  msg: "please provide  valid userid" })
     }
 
     if (!validator.isValidObjectId(OrderId)) {
-        return res.status(400).send({ status: "false" }, { msg: "please provide  valid OrderId" })
+        return res.status(400).send({ status: "false" ,  msg: "please provide  valid OrderId" })
     }
 
      let userDeatils = await userModel.findById(userId)
      if(!userDeatils){
-        return res.status(400).send({ status: "false" }, { msg: "user is not present" })
+        return res.status(400).send({ status: "false" ,  msg: "user is not present" })
      }
 
 

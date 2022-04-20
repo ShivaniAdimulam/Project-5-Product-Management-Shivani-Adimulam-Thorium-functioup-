@@ -201,36 +201,36 @@ const updateUser = async function (req, res) {
                 profile['profileImage'] = uploadedFileURL
             }
 
-            
- if(data.hasOwnProperty(address)){
 
-            if (address.shipping) {
-                
-                if (validator.isvalid(address.shipping.street)) {
-                    console.log("hi")
-                    profile['address']["shipping"]["street"] = address.shipping.street
+            if (data.hasOwnProperty(address)) {
+
+                if (address.shipping) {
+
+                    if (validator.isvalid(address.shipping.street)) {
+                        console.log("hi")
+                        profile['address']["shipping"]["street"] = address.shipping.street
+                    }
+                    if (validator.isvalid(address.shipping.city)) {
+                        profile['address']["shipping"]["city"] = address.shipping.city
+                    }
+                    if (validator.isvalid(address.shipping.pincode)) {
+                        profile['address']['shipping']['pincode'] = address.shipping.pincode
+                    }
                 }
-                if (validator.isvalid(address.shipping.city)) {
-                    profile['address']["shipping"]["city"] = address.shipping.city
-                }
-                if (validator.isvalid(address.shipping.pincode)) {
-                    profile['address']['shipping']['pincode'] = address.shipping.pincode
+                if (typeof (address.billing) != undefined) {
+                    if (validator.isvalid(address.billing.street)) {
+                        profile['address']['billing']['street'] = address.billing.street
+                    }
+                    if (validator.isvalid(address.billing.city)) {
+                        profile['address']['billing']['city'] = address.billing.city
+                    }
+                    if (validator.isvalid(address.billing.pincode)) {
+                        profile['address']['billing']['pincode'] = address.billing.pincode
+                    }
+
+
                 }
             }
-            if (typeof(address.billing) != undefined) {
-                if (validator.isvalid(address.billing.street)) {
-                    profile['address']['billing']['street'] = address.billing.street
-                }
-                if (validator.isvalid(address.billing.city)) {
-                    profile['address']['billing']['city'] = address.billing.city
-                }
-                if (validator.isvalid(address.billing.pincode)) {
-                    profile['address']['billing']['pincode'] = address.billing.pincode
-                }
-
-
-            }
-}
             let updated = await userModel.findOneAndUpdate({ _id: userId }, { $set: profile }, { new: true })
 
             return res.status(200).send({ status: true, message: "data updated successfully", data: updated })

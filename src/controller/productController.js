@@ -283,7 +283,7 @@ let deleteProduct = async function (req, res) {
         let data = req.params.productId
 
         if (!validator.isValidObjectId(data)) {
-            return res.status(400).send({ status: "false" }, { msg: "please provide  valid productid" })
+            return res.status(400).send({ status: "false" , msg: "please provide  valid productid" })
         }
 
         let productDetails = await productModel.findById(data)
