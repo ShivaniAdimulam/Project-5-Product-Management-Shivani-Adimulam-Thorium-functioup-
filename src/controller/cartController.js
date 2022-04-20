@@ -256,7 +256,6 @@ const updateCart = async (req, res) => {
 
                 }
 
-                console.log(count)
 
                 if (count < 1) { return res.status(400).send({ Status: true, msg: "Product does not exist in cart" }) }
 
