@@ -187,6 +187,9 @@ let productUpdate = async function (req, res) {
 
         console.log()
         const productDetails = await productModel.findById(productID)
+        if(!productDetails){
+            return res.status(404).send({ status: false, message: "productId not found" })
+        }
         console.log(productDetails)
         if (productDetails.isDeleted == false) {
 
