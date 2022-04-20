@@ -4,7 +4,8 @@ const authentication = async function (req, res, next) {
     try {
         const token = req.headers.authorization;
         if (token) {
-            const decoded = jwt.verify(token, 'privatekey')
+            bearertoken = token.split(" ")
+            const decoded = jwt.verify(bearertoken[1], 'privatekey')
             if (decoded) {
                 req.decodedToken = decoded
             }

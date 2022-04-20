@@ -244,9 +244,21 @@ const updateCart = async (req, res) => {
                 let filter = {}
                 let CartProductQuantity = 0
                 let flage = 0
-                if(cartDeatils.items.length == 0){
-                   return res.status(404).send({status:false,message:"no product found"})
+                if (cartDeatils.items.length == 0) {
+                    return res.status(404).send({ status: false, message: "no product found" })
                 }
+
+                let count = 0
+                for (let k = 0; k < cartDeatils.items.length; k++) {
+                    if (cartDeatils.items[k].productId == productId.trim()) {
+                        count++
+                    }
+
+                }
+
+                console.log(count)
+
+                if (count < 1) { return res.status(400).send({ Status: true, msg: "Product does not exist in cart" }) }
 
                 for (let i = 0; i < cartDeatils.items.length; i++) {
 
@@ -261,8 +273,8 @@ const updateCart = async (req, res) => {
 
                 let productpriceofcart = CartProductQuantity * productDeatils.price
                 let totalprices = cartDeatils.totalPrice - productpriceofcart
-                let filterlength =  Object.keys(filter).length
-                let totalitem = cartDeatils.items.length - filterlength  
+                let filterlength = Object.keys(filter).length
+                let totalitem = cartDeatils.items.length - filterlength
 
                 let reduceCart = await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: filter, $set: { totalPrice: totalprices, totalItems: totalitem } })
 
@@ -397,7 +409,7 @@ const deleteCart = async (req, res) => {
                 return res.status(404).send({ status: false, message: "cart not found for given userId" })
             }
 
-        }else{
+        } else {
             return res.status(403).send({ status: false, message: "authorization failed" })
         }
     } catch (err) {
