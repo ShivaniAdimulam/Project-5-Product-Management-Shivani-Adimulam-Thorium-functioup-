@@ -140,7 +140,8 @@ const getUser = async (req, res) => {
 
 const updateUser = async function (req, res) {
     try {
-        let data = req.body
+        let data1 = req.body
+        let data = JSON.parse(JSON.stringify(data1))
         let userId = req.params.userId.trim()
         let profilePic = req.files
         if (!data || !profilePic) {
@@ -201,9 +202,10 @@ const updateUser = async function (req, res) {
             }
 
             
+ if(data.hasOwnProperty(address)){
 
-            
-            if (address.shipping != undefined) {
+            if (address.shipping) {
+                
                 if (validator.isvalid(address.shipping.street)) {
                     console.log("hi")
                     profile['address']["shipping"]["street"] = address.shipping.street
@@ -215,7 +217,7 @@ const updateUser = async function (req, res) {
                     profile['address']['shipping']['pincode'] = address.shipping.pincode
                 }
             }
-            if (address.billing != undefined) {
+            if (typeof(address.billing) != undefined) {
                 if (validator.isvalid(address.billing.street)) {
                     profile['address']['billing']['street'] = address.billing.street
                 }
@@ -228,7 +230,7 @@ const updateUser = async function (req, res) {
 
 
             }
-
+}
             let updated = await userModel.findOneAndUpdate({ _id: userId }, { $set: profile }, { new: true })
 
             return res.status(200).send({ status: true, message: "data updated successfully", data: updated })

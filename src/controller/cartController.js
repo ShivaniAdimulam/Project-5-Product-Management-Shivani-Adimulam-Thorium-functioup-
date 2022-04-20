@@ -79,9 +79,9 @@ const createCart = async (req, res) => {
         const data = req.body
         const UserId = req.params.userId
 
-        if (!validator.isValidObjectId(req.body.productId)) {
-            return res.status(400).send({ status: false, message: "productid is not valid" })
-        }
+        // if (!validator.isValidObjectId(req.body.productId)) {
+        //     return res.status(400).send({ status: false, message: "productid is not valid" })
+        // }
 
         if (Object.keys(data).length == 0) {
             return res.status(400).send({ status: false, meassage: "please enter data in body " })

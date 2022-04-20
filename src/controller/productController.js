@@ -185,8 +185,10 @@ let productUpdate = async function (req, res) {
             return res.status(400).send({ status: false, message: "Enter valid productId" })
         }
 
+        console.log()
         const productDetails = await productModel.findById(productID)
-        if (productDetails.isDeleted === false) {
+        console.log(productDetails)
+        if (productDetails.isDeleted == false) {
 
             const { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments } = data
 
@@ -222,7 +224,7 @@ let productUpdate = async function (req, res) {
 
             if (validator.isvalid(currencyId)) {
                 const CurrencyIds = ['INR', 'USD', 'EUR', 'JPY']
-                if (!CurrencyIds.includes(currencyId.trim())) {
+                if (!CurrencyIds.includes(currencyId)) {
                     return res.status(400).send({ status: false, message: "enter currencyId format correct you can use ['INR' , 'USD' , 'EUR' ,] it is required" })
                 }
                 Products['currencyId'] = currencyId
@@ -230,7 +232,7 @@ let productUpdate = async function (req, res) {
 
             if (validator.isvalid(currencyFormat)) {
                 const Currencyformate = ['$', '₹', '¥', '€']
-                if (!Currencyformate.includes(currencyFormat.trim())) {
+                if (!Currencyformate.includes(currencyFormat)) {
                     return res.status(400).send({ status: false, message: "enter  currencyFormat correct formate ['$' , '₹' , '¥' , '€']...it is required" })
                 }
                 Products['currencyFormat'] = currencyFormat
@@ -241,9 +243,9 @@ let productUpdate = async function (req, res) {
                 Products['style'] = style
             }
             let addavailableSizes = ""
-            if (validator.isvalid(availableSizes.trim())) {
+            if (validator.isvalid(availableSizes)) {
                 let gavailableSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
-                if (!gavailableSizes.includes(availableSizes.trim())) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
+                if (!gavailableSizes.includes(availableSizes)) return res.status(400).send({ status: false, message: "availableSizes should be from [S, XS,M,X, L,XXL, XL]" })
                 addavailableSizes= availableSizes
             }
 
