@@ -222,7 +222,7 @@ let productUpdate = async function (req, res) {
                 if (price < 1) {
                     return res.status(400).send({ status: false, message: "please enter valid price" })
                 }
-                Products['price'] = price
+                Products['price'] = price    
             }
 
             if (validator.isvalid(currencyId)) {
